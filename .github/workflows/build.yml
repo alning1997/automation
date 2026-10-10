@@ -1,0 +1,36 @@
+name: Meson CI
+
+# Запускаем сборку при каждом пуше или Pull Request в ветку main
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest # Используем чистую виртуальную машину Ubuntu
+
+    steps:
+    # 1. Скачиваем исходный код репозитория
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 2. Устанавливаем Python, Meson и Ninja (сборщик для Meson)
+    - name: Set up Python and Build Tools
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Install Meson and Ninja
+      run: |
+        python -m pip install --upgrade pip
+        pip install meson ninja
+
+    # 3. Конфигурируем проект (генерируем файлы сборки в папку builddir)
+    - name: Configure Project
+      run: meson setup builddir
+
+    # 4. Компилируем проект
+    - name: Build Project
+      run: meson compile -C builddir
