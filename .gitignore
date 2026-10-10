@@ -1,0 +1,10 @@
+# ignore hidden files
+.*
+# except the tracked ones and derivatives
+!.ci/
+!.github/
+!.gitignore*
+
+# ignore default build directory
+build
+build-*
