@@ -34,3 +34,19 @@ jobs:
     # 4. Компилируем проект
     - name: Build Project
       run: meson compile -C builddir
+
+    # Этот шаг выполнится ТОЛЬКО если сборка упала (failure)
+    - name: Handle Failure
+      if: ${{ failure() && steps.compile_step.outcome == 'failure' }}
+      run: echo "Сборка Meson завершилась ошибкой! Проверьте логи."
+
+    # Этот шаг выполнится ТОЛЬКО если сборка прошла успешно
+    - name: Handle Success
+      if: ${{ success() }}
+      run: echo "Сборка завершена успешно!"
+
+    - name: Upload Build Output
+      uses: actions/upload-artifact@v4
+      with:
+        name: helloworld  # Имя архива на GitHub
+        path: builddir/src/helloworld
